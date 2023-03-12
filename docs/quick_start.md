@@ -12,8 +12,8 @@ The example loads a pre-recorded wav file and plays it back with processing. The
 ## The DSP Code
 
 ```c++
-   // 1: fractional delay
-   q::delay _delay{ 350_ms, 44100 };
+   // 1: Create a fractional delay function object
+   q::delay _delay{350_ms, 44100};
 
    // 2: Mix the signal s, and the delayed signal
    //    (where s is the incoming sample)
@@ -30,7 +30,7 @@ Normally, there will be a processing loop that receives the incoming samples, `s
 Processors such as `q::delay` are C++ function objects (sometimes called functors) that can be composed to form more complex processors. For example if you want to filter the delayed signal with a low-pass with a 1 kHz cutoff frequency, you apply the `q::lowpass` filter over the result of the delay:
 
 ```c++
-   q::lowpass _lp{ 1_kHz, 44100 };
+   q::lowpass _lp{1_kHz, 44100};
 ```
 
 then insert the filter where it is needed in the processing loop:
@@ -232,14 +232,14 @@ Again, take note of the abundant use of user-defined literals for units such as 
     , 1_s         // release rate
    };
 
-   my_square_synth synth{ env_cfg };
+   my_square_synth synth{env_cfg};
 ```
 
 Then, we create `my_midi_processor`, giving it a reference to `my_square_synth`. We'll also need a `midi_input_stream` that receives the actual incoming MIDI messages from the chosen hardware.
 
 ```c++
    q::midi_input_stream stream;
-   my_midi_processor proc{ synth };
+   my_midi_processor proc{synth};
 ```
 
 Now we're all set. We start the synth and enter a loop that exits when the user presses ctrl-c (in which case the running flag becomes false). In the loop, we give our MIDI processor a chance to process incoming MIDI events as they arrive from the MIDI stream:

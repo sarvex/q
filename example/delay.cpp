@@ -57,8 +57,8 @@ struct delay_processor : q::port_audio_stream
 
 int main()
 {
-   q::wav_memory     wav{ "audio_files/Low E.wav" };
-   delay_processor   proc{ wav, 350_ms, 0.85f };
+   q::wav_memory     wav{"audio_files/Low E.wav"};
+   delay_processor   proc{wav, 350_ms, 0.85f};
 
    if (proc.is_valid())
    {
