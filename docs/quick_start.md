@@ -1,3 +1,5 @@
+# ![Q-Logo](assets/images/q-logo-small.png) Audio DSP Library
+
 ## Hello, World
 
 Here's a quick "Hello, World" example that highlights the simplicity of the Q DSP Library: a delay effects processor.
