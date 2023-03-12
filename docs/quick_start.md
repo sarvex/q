@@ -52,6 +52,8 @@ Here's a short video clip:
 
 https://user-images.githubusercontent.com/568094/224520958-4b119a25-365e-405c-ac7e-3f87f0a1b44d.mp4
 
+<br>
+
 After building the program, make sure you have a MIDI keyboard connected
 before starting the application. At startup, the app will present you with a
 list of available MIDI hardware and will ask you what you want to use:
