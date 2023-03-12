@@ -48,10 +48,7 @@ Let us move on to a more elaborate example. How about a fully functional, bandwi
 
 Here's a short video clip:
 
-{% include vimeoPlayer.html id=419775584 width=732 height=462 %}
-
-![Test](https://cycfi.com/assets/q_synth.mp4)
-
+https://user-images.githubusercontent.com/568094/224520958-4b119a25-365e-405c-ac7e-3f87f0a1b44d.mp4
 
 After building the program, make sure you have a MIDI keyboard connected
 before starting the application. At startup, the app will present you with a
