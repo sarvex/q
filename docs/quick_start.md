@@ -88,16 +88,11 @@ Available Audio Devices (ID : "Name" inputs/outputs):
 Choose Audio Device ID: 3
 ```
 
-Take note that the demo is a console application. The Q library does not have
-a GUI, for good reason! We want to keep it as simple as possible. The GUI is
-taken cared of by other libraries (e.g.
-[Elements](https://github.com/cycfi/elements)).
+Take note that the demo is a console application. The Q library does not have a GUI, for good reason! We want to keep it as simple as possible. The GUI is taken cared of by other libraries (e.g. [Elements](https://github.com/cycfi/elements)).
 
-After choosing the MIDI and Audio driver, the synth is playable. The synth is
-monophonic and responds to velocity only, for simplicity.
+After choosing the MIDI and Audio driver, the synth is playable. The synth is monophonic and responds to velocity only, for simplicity.
 
-There are more demo applications in the example directory. After this quick
-tutorial, free to explore.
+There are more demo applications in the example directory. After this quick tutorial, free to explore.
 
 ### The Synth
 
@@ -142,10 +137,7 @@ Here's the actual synthesizer with the processing loop:
    };
 ```
 
-Our synth, a subclass of `q::port_audio_stream`, sets up buffers for the
-input and output audio streams and presents those to our processing loop (the
-`process` function above). In this example, we setup an audio stream with the
-selected device, no inputs and two (stereo) outputs:
+Our synth, a subclass of `q::port_audio_stream`, sets up buffers for the input and output audio streams and presents those to our processing loop (the `process` function above). In this example, we setup an audio stream with the selected device, no inputs and two (stereo) outputs:
 
 ```c++
 port_audio_stream(q::audio_device::get(device_id), 0, 2)
@@ -153,24 +145,13 @@ port_audio_stream(q::audio_device::get(device_id), 0, 2)
 
 ### The Oscillator
 
-Behind the scenes, there's a lot going on here, actually. But you will notice
-that emphasis is given to making the library very readable, easy to
-understand and follow by breaking down complex tasks into smaller manageable
-tasks and using function composition at progressively higher levels, while
-maintaining simplicity and clarity of intent.
+Behind the scenes, there's a lot going on here, actually. But you will notice that emphasis is given to making the library very readable, easy to understand and follow by breaking down complex tasks into smaller manageable tasks and using function composition at progressively higher levels, while maintaining simplicity and clarity of intent.
 
-The synthesizer above is composed of smaller building blocks: fine grained
-C++ function objects. For example, here's the square wave oscillator
-(bandwidth limited using poly_blep).
+The synthesizer above is composed of smaller building blocks: fine grained C++ function objects. For example, here's the square wave oscillator (bandwidth limited using poly_blep).
 
-:point_right: &nbsp; For now, we will skim over details such as the
-`envelope`, `phase`, and `phase_iterator`, and  and this thing called `poly
-blep`. The important point, exemplified here, is that we want to keep our
-building blocks as simple and minimal as possible. We will cover that in
-greater detail later.
+:point_right: &nbsp; For now, we will skim over details such as the `envelope`, `phase`, and `phase_iterator`, and  and this thing called `poly blep`. The important point, exemplified here, is that we want to keep our building blocks as simple and minimal as possible. We will cover that in greater detail later.
 
-The astute reader may notice that our `square_synth` class does not even
-have state!
+The astute reader may notice that our `square_synth` class does not even have state!
 
 ```c++
    struct square_synth
@@ -200,21 +181,11 @@ have state!
 
 Yeah, that's the complete oscillator. That's all there is to it! :wink:
 
-The modern C++ savvy programmer will immediately notice the use of
-`constexpr`, applied judiciously all throughout the library. Such modern c++
-facilities allow the compiler to generate extremely efficient code, even
-those that are generated at compile time. That means, for this example, that
-one can build an oscillator at compile time if needed, perhaps with constant
-wavetable results stored in read-only memory.
+The modern C++ savvy programmer will immediately notice the use of `constexpr`, applied judiciously all throughout the library. Such modern c++ facilities allow the compiler to generate extremely efficient code, even those that are generated at compile time. That means, for this example, that one can build an oscillator at compile time if needed, perhaps with constant wavetable results stored in read-only memory.
 
 ### Processing MIDI
 
-The `midi_processor` takes care of MIDI events. Your application will have
-its own MIDI processor that deals with MIDI events that you are interested
-in. For this simple example, we simply want to process note-on and note-off
-events. On note-on events, our MIDI processor sets `my_square_synth`'s note
-frequency and triggers its envelope for attack. On note-off events, our MIDI
-processor initiates the envelope's release.
+The `midi_processor` takes care of MIDI events. Your application will have its own MIDI processor that deals with MIDI events that you are interested in. For this simple example, we simply want to process note-on and note-off events. On note-on events, our MIDI processor sets `my_square_synth`'s note frequency and triggers its envelope for attack. On note-off events, our MIDI processor initiates the envelope's release.
 
 ```c++
    struct my_midi_processor : midi::processor
@@ -246,16 +217,10 @@ processor initiates the envelope's release.
 
 ### The Main Function
 
-In the main function, we instantiate `my_square_synth` and
-`my_midi_processor`. The synth constructor, in case you haven't noticed yet,
-requires an envelope configuration (`envelope::config`). Here, we provide our
-configuration. Take note that in this example, the envelope parameters are
-constant, for the sake of simplicity, but you can definitely have these
-controllable by the user by writing your own MIDI processor that deals with
-MIDI control change messages.
+In the main function, we instantiate `my_square_synth` and `my_midi_processor`. The synth constructor, in case you haven't noticed yet, requires an envelope configuration (`envelope::config`). Here, we provide our configuration. Take note that in this example, the envelope parameters are constant, for the sake of simplicity, but you can definitely have these
+controllable by the user by writing your own MIDI processor that deals with MIDI control change messages.
 
-Again, take note of the abundant use of user-defined literals for units such
-as duration (e.g. 100_ms) and level (e.g. -12_dB).
+Again, take note of the abundant use of user-defined literals for units such as duration (e.g. 100_ms) and level (e.g. -12_dB).
 
 ```c++
    auto env_cfg = q::envelope::config
@@ -270,19 +235,14 @@ as duration (e.g. 100_ms) and level (e.g. -12_dB).
    my_square_synth synth{ env_cfg };
 ```
 
-Then, we create `my_midi_processor`, giving it a reference to
-`my_square_synth`. We'll also need a `midi_input_stream` that receives the
-actual incoming MIDI messages from the chosen hardware.
+Then, we create `my_midi_processor`, giving it a reference to `my_square_synth`. We'll also need a `midi_input_stream` that receives the actual incoming MIDI messages from the chosen hardware.
 
 ```c++
    q::midi_input_stream stream;
    my_midi_processor proc{ synth };
 ```
 
-Now we're all set. We start the synth and enter a loop that exits when the
-user presses ctrl-c (in which case the running flag becomes false). In the
-loop, we give our MIDI processor a chance to process incoming MIDI events as
-they arrive from the MIDI stream:
+Now we're all set. We start the synth and enter a loop that exits when the user presses ctrl-c (in which case the running flag becomes false). In the loop, we give our MIDI processor a chance to process incoming MIDI events as they arrive from the MIDI stream:
 
 ```c++
    synth.start();
