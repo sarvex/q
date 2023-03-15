@@ -1,5 +1,21 @@
 # ![Q-Logo](assets/images/q-logo-small.png) Audio DSP Library
 
+# Quick Start
+
+<!-- TOC ignore:true -->
+## Table of Contents
+<!-- TOC -->
+
+- [Hello, World](#hello-world)
+    - [The DSP Code](#the-dsp-code)
+- [Hello, Universe](#hello-universe)
+    - [The Synth](#the-synth)
+    - [The Oscillator](#the-oscillator)
+    - [Processing MIDI](#processing-midi)
+    - [The Main Function](#the-main-function)
+
+<!-- /TOC -->
+
 ## Hello, World
 
 Here's a quick "Hello, World" example that highlights the simplicity of the Q DSP Library: a delay effects processor.
@@ -9,18 +25,18 @@ Here's a quick "Hello, World" example that highlights the simplicity of the Q DS
 
 The example loads a pre-recorded wav file and plays it back with processing. The raw audio source will be played in the left channel while the delayed signal will be played in the right channel. Pretty much as straightforward as possible. The audio will be played using the currently selected audio device.
 
-## The DSP Code
+### The DSP Code
 
 ```c++
-   // 1: Create a fractional delay function object
-   q::delay _delay{350_ms, 44100};
+// 1: Create a fractional delay function object
+q::delay _delay{350_ms, 44100};
 
-   // 2: Mix the signal s, and the delayed signal
-   //    (where s is the incoming sample)
-   auto _y = s + _delay();
+// 2: Mix the signal s, and the delayed signal
+//    (where s is the incoming sample)
+auto _y = s + _delay();
 
-   // 3: Feed back the result to the delay
-   _delay.push(_y * _feedback);
+// 3: Feed back the result to the delay
+_delay.push(_y * _feedback);
 ```
 
 Normally, there will be a processing loop that receives the incoming samples, `s`. You place #1, the delay constructor, `q::delay`, before the processing loop and #2 and #3 inside inside the loop.
@@ -30,15 +46,15 @@ Normally, there will be a processing loop that receives the incoming samples, `s
 Processors such as `q::delay` are C++ function objects (sometimes called functors) that can be composed to form more complex processors. For example if you want to filter the delayed signal with a low-pass with a 1 kHz cutoff frequency, you apply the `q::lowpass` filter over the result of the delay:
 
 ```c++
-   q::lowpass _lp{1_kHz, 44100};
+q::lowpass _lp{1_kHz, 44100};
 ```
 
 then insert the filter where it is needed in the processing loop:
 
 ```c++
-   // 2: Add the signal s, and the delayed,
-   //    low-pass filtered signal
-   auto _y = s + _lp(_delay());
+// 2: Add the signal s, and the delayed,
+//    low-pass filtered signal
+auto _y = s + _lp(_delay());
 ```
 
 ## Hello, Universe
@@ -99,42 +115,42 @@ There are more demo applications in the example directory. After this quick tuto
 Here's the actual synthesizer with the processing loop:
 
 ```c++
-   struct my_square_synth : q::port_audio_stream
+struct my_square_synth : q::port_audio_stream
+{
+   my_square_synth(q::envelope::config env_cfg, int device_id)
+      : port_audio_stream(q::audio_device::get(device_id), 0, 2)
+      , env(env_cfg, this->sampling_rate())
+      , filter(0.5, 0.8)
+   {}
+
+   void process(out_channels const& out)
    {
-      my_square_synth(q::envelope::config env_cfg, int device_id)
-       : port_audio_stream(q::audio_device::get(device_id), 0, 2)
-       , env(env_cfg, this->sampling_rate())
-       , filter(0.5, 0.8)
-      {}
-
-      void process(out_channels const& out)
+      auto left = out[0];
+      auto right = out[1];
+      for (auto frame : out.frames())
       {
-         auto left = out[0];
-         auto right = out[1];
-         for (auto frame : out.frames())
-         {
-            // Generate the ADSR envelope
-            auto env_ = env();
+         // Generate the ADSR envelope
+         auto env_ = env();
 
-            // Set the filter frequency
-            filter.cutoff(env_);
+         // Set the filter frequency
+         filter.cutoff(env_);
 
-            // Synthesize the square wave
-            auto val = q::square(phase++);
+         // Synthesize the square wave
+         auto val = q::square(phase++);
 
-            // Apply the envelope (amplifier and filter) with soft clip
-            val = clip(filter(val) * env_);
+         // Apply the envelope (amplifier and filter) with soft clip
+         val = clip(filter(val) * env_);
 
-            // Output
-            right[frame] = left[frame] = val;
-         }
+         // Output
+         right[frame] = left[frame] = val;
       }
+   }
 
-      q::phase_iterator phase;            // The phase iterator
-      q::envelope       env;              // The envelope
-      q::reso_filter    filter;           // The resonant filter
-      q::soft_clip      clip;             // Soft clip
-   };
+   q::phase_iterator phase;            // The phase iterator
+   q::envelope       env;              // The envelope
+   q::reso_filter    filter;           // The resonant filter
+   q::soft_clip      clip;             // Soft clip
+};
 ```
 
 Our synth, a subclass of `q::port_audio_stream`, sets up buffers for the input and output audio streams and presents those to our processing loop (the `process` function above). In this example, we setup an audio stream with the selected device, no inputs and two (stereo) outputs:
@@ -154,29 +170,29 @@ The synthesizer above is composed of smaller building blocks: fine grained C++ f
 The astute reader may notice that our `square_synth` class does not even have state!
 
 ```c++
-   struct square_synth
+struct square_synth
+{
+   constexpr float operator()(phase p, phase dt) const
    {
-      constexpr float operator()(phase p, phase dt) const
-      {
-         constexpr auto middle = phase::middle();
-         auto r = p < middle ? 1.0f : -1.0f;
+      constexpr auto middle = phase::middle();
+      auto r = p < middle ? 1.0f : -1.0f;
 
-         // Correct rising discontinuity
-         r += poly_blep(p, dt);
+      // Correct rising discontinuity
+      r += poly_blep(p, dt);
 
-         // Correct falling discontinuity
-         r -= poly_blep(p + middle, dt);
+      // Correct falling discontinuity
+      r -= poly_blep(p + middle, dt);
 
-         return r;
-      }
+      return r;
+   }
 
-      constexpr float operator()(phase_iterator i) const
-      {
-         return (*this)(i._phase, i._incr);
-      }
-   };
+   constexpr float operator()(phase_iterator i) const
+   {
+      return (*this)(i._phase, i._incr);
+   }
+};
 
-   constexpr auto square = square_synth{};
+constexpr auto square = square_synth{};
 ```
 
 Yeah, that's the complete oscillator. That's all there is to it! :wink:
@@ -188,31 +204,31 @@ The modern C++ savvy programmer will immediately notice the use of `constexpr`, 
 The `midi_processor` takes care of MIDI events. Your application will have its own MIDI processor that deals with MIDI events that you are interested in. For this simple example, we simply want to process note-on and note-off events. On note-on events, our MIDI processor sets `my_square_synth`'s note frequency and triggers its envelope for attack. On note-off events, our MIDI processor initiates the envelope's release.
 
 ```c++
-   struct my_midi_processor : midi::processor
+struct my_midi_processor : midi::processor
+{
+   using midi::processor::operator();
+
+   my_midi_processor(my_square_synth& synth)
+      : _synth(synth)
+   {}
+
+   void operator()(midi::note_on msg, std::size_t time)
    {
-      using midi::processor::operator();
+      _key = msg.key();
+      auto freq = midi::note_frequency(_key);
+      _synth.phase.set(freq, _synth.sampling_rate());
+      _synth.env.trigger(float(msg.velocity()) / 128);
+   }
 
-      my_midi_processor(my_square_synth& synth)
-       : _synth(synth)
-      {}
+   void operator()(midi::note_off msg, std::size_t time)
+   {
+      if (msg.key() == _key)
+         _synth.env.release();
+   }
 
-      void operator()(midi::note_on msg, std::size_t time)
-      {
-         _key = msg.key();
-         auto freq = midi::note_frequency(_key);
-         _synth.phase.set(freq, _synth.sampling_rate());
-         _synth.env.trigger(float(msg.velocity()) / 128);
-      }
-
-      void operator()(midi::note_off msg, std::size_t time)
-      {
-         if (msg.key() == _key)
-            _synth.env.release();
-      }
-
-      std::uint8_t      _key;
-      my_square_synth&  _synth;
-   };
+   std::uint8_t      _key;
+   my_square_synth&  _synth;
+};
 ```
 
 ### The Main Function
@@ -223,32 +239,32 @@ controllable by the user by writing your own MIDI processor that deals with MIDI
 Again, take note of the abundant use of user-defined literals for units such as duration (e.g. 100_ms) and level (e.g. -12_dB).
 
 ```c++
-   auto env_cfg = q::envelope::config
-   {
-      100_ms      // attack rate
-    , 1_s         // decay rate
-    , -12_dB      // sustain level
-    , 5_s         // sustain rate
-    , 1_s         // release rate
-   };
+auto env_cfg = q::envelope::config
+{
+     100_ms      // attack rate
+   , 1_s         // decay rate
+   , -12_dB      // sustain level
+   , 5_s         // sustain rate
+   , 1_s         // release rate
+};
 
-   my_square_synth synth{env_cfg};
+my_square_synth synth{env_cfg};
 ```
 
 Then, we create `my_midi_processor`, giving it a reference to `my_square_synth`. We'll also need a `midi_input_stream` that receives the actual incoming MIDI messages from the chosen hardware.
 
 ```c++
-   q::midi_input_stream stream;
-   my_midi_processor proc{synth};
+q::midi_input_stream stream;
+my_midi_processor proc{synth};
 ```
 
 Now we're all set. We start the synth and enter a loop that exits when the user presses ctrl-c (in which case the running flag becomes false). In the loop, we give our MIDI processor a chance to process incoming MIDI events as they arrive from the MIDI stream:
 
 ```c++
-   synth.start();
-   while (running)
-      stream.process(proc);
-   synth.stop();
+synth.start();
+while (running)
+   stream.process(proc);
+synth.stop();
 ```
 
 *Copyright (c) 2014-2023 Joel de Guzman. All rights reserved.*
