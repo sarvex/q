@@ -154,16 +154,19 @@ namespace cycfi::q
       return detail::table_lookup(ph, detail::sin_table);
    }
 
+   // a is in [ pi, 2pi ]
    constexpr float sin_lu(float a)
    {
       return sin_lu(phase(a / 2_pi));
    }
 
+   // a is in [ 0, 2pi ]
    constexpr float sin_lu(double a)
    {
       return sin_lu(phase(a / 2_pi));
    }
 
+   // a is in [ 0, 2pi ]
    constexpr float sin_lu(long double a)
    {
       return sin_lu(phase(a / 2_pi));

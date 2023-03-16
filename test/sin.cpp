@@ -60,8 +60,12 @@ TEST_CASE("Test_accuracy")
             total_diff += diff;
          }
       }
+      auto ave_diff = total_diff/100000;
       std::cout << "q::sin_lu(a) max diff: " << max_diff << std::endl;
-      std::cout << "q::sin_lu(a) ave diff: " << total_diff/100000 << std::endl;
+      std::cout << "q::sin_lu(a) ave diff: " << ave_diff << std::endl;
+
+      CHECK(max_diff < 5e-06);
+      CHECK(ave_diff < 2e-06);
    }
 
    {
@@ -78,8 +82,12 @@ TEST_CASE("Test_accuracy")
             total_diff += diff;
          }
       }
+      auto ave_diff = total_diff/100000;
       std::cout << "q::fast_sin(a) max diff: " << max_diff << std::endl;
-      std::cout << "q::fast_sin(a) ave diff: " << total_diff/100000 << std::endl;
+      std::cout << "q::fast_sin(a) ave diff: " << ave_diff << std::endl;
+
+      CHECK(max_diff < 4e-05);
+      CHECK(ave_diff < 1.3e-05);
    }
 
    {
@@ -96,8 +104,12 @@ TEST_CASE("Test_accuracy")
             total_diff += diff;
          }
       }
+      auto ave_diff = total_diff/100000;
       std::cout << "q::faster_sin(a) max diff: " << max_diff << std::endl;
-      std::cout << "q::faster_sin(a) ave diff: " << total_diff/100000 << std::endl;
+      std::cout << "q::faster_sin(a) ave diff: " << ave_diff << std::endl;
+
+      CHECK(max_diff < 9e-04);
+      CHECK(ave_diff < 5e-04);
    }
 }
 
