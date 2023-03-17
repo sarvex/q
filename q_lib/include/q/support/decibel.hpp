@@ -1,5 +1,5 @@
 /*=============================================================================
-   Copyright (c) 2014-2022 Joel de Guzman. All rights reserved.
+   Copyright (c) 2014-2023 Joel de Guzman. All rights reserved.
 
    Distributed under the MIT License [ https://opensource.org/licenses/MIT ]
 =============================================================================*/
@@ -29,12 +29,6 @@ namespace cycfi::q
       explicit             decibel(double val);
       constexpr            decibel(double val, _direct) : rep(val) {}
 
-      [[deprecated("Use as_double(db) instead of double(db)")]]
-      constexpr explicit   operator double() const;
-
-      [[deprecated("Use as_float(db) instead of float(db)")]]
-      constexpr explicit   operator float() const;
-
       constexpr decibel    operator+() const          { return {rep, direct }; }
       constexpr decibel    operator-() const          { return {-rep, direct }; }
 
@@ -61,10 +55,10 @@ namespace cycfi::q
    constexpr decibel operator*(float a, decibel b);
    constexpr decibel operator*(int a, decibel b);
 
-   inline decibel    operator/(decibel a, decibel b);
-   inline decibel    operator/(decibel a, double b);
-   inline decibel    operator/(decibel a, float b);
-   inline decibel    operator/(decibel a, int b);
+   constexpr decibel operator/(decibel a, decibel b);
+   constexpr decibel operator/(decibel a, double b);
+   constexpr decibel operator/(decibel a, float b);
+   constexpr decibel operator/(decibel a, int b);
 
    constexpr bool    operator==(decibel a, decibel b);
    constexpr bool    operator!=(decibel a, decibel b);
@@ -94,16 +88,6 @@ namespace cycfi::q
    inline decibel::decibel(double val)
     : rep(20.0f * fast_log10(val))
    {}
-
-   constexpr decibel::operator double() const
-   {
-      return as_double(*this);
-   }
-
-   constexpr decibel::operator float() const
-   {
-      return as_float(*this);
-   }
 
    constexpr decibel operator-(decibel a, decibel b)
    {
@@ -150,22 +134,22 @@ namespace cycfi::q
       return decibel{a * b.rep, decibel::direct};
    }
 
-   inline decibel operator/(decibel a, decibel b)
+   constexpr decibel operator/(decibel a, decibel b)
    {
       return decibel{a.rep / b.rep, decibel::direct};
    }
 
-   inline decibel operator/(decibel a, double b)
+   constexpr decibel operator/(decibel a, double b)
    {
       return decibel{a.rep / b, decibel::direct};
    }
 
-   inline decibel operator/(decibel a, float b)
+   constexpr decibel operator/(decibel a, float b)
    {
       return decibel{a.rep / b, decibel::direct};
    }
 
-   inline decibel operator/(decibel a, int b)
+   constexpr decibel operator/(decibel a, int b)
    {
       return decibel{a.rep / b, decibel::direct};
    }
