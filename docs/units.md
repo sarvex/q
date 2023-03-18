@@ -1,6 +1,6 @@
-# Units
+# ![Q-Logo](assets/images/q-logo-small.png) Audio DSP Library
 
--------------------------------------------------------------------------------
+# Units
 
 ## Table of Contents
 - [Table of Contents](#table-of-contents)
@@ -29,88 +29,66 @@ A representation of a linear scalar value as a concept.
 | Symbol       | Description              |
 | ------------ | ------------------------ |
 | `V`          | Value type               |
-| `v`          | Scalar value.            |
-| `a`, `b`     | Instance of `value<T>`   |
+| `v`          | Primitive scalar value.  |
+| `a`, `b`     | Instances of `Value`.    |
 
 #### Constructors and assignment
 
-```c++
-// Default constructor [1].
-V{}
-V()
-
-// Constructor [2].
-V{v}
-V(v)
-
-// Copy constructor. [3]
-V{a}
-V(a)
-
-// Assignment [4]
-a = b
-```
-
-#### Semantics
-1. Default construct a `Value` with initial value `{ 0 }`
-2. Construct a `Value` given initial value `v`.
-3. Copy construct a `Value`, `a`.
-4. Assign `b`, to `a`.
+| Expression   |  Semantics                                                      |
+| ------------ | --------------------------------------------------------------- |
+| `V{}`        |  Empty brace initialization. Value initialize a `Value`         |
+| `V()`        |  Default construction. Default construct initialize a `Value`.  |
+| `V{v}`       |  Brace initialization from primitive scalar value `v`.          |
+| `V(v)`       |  Construct a `Value` from primitive scalar value `v`.           |
+| `V{a}`       |  Copy brace initialization from `Value` `a`.                    |
+| `V(a)`       |  Copy construct from `Value` `a`.                               |
+| `a = b`      |  Assignment. Assign `Value` `b`, to `Value` `a`.                |
 
 #### Comparison
 
-```c++
-a == b      // Equality
-a == v      // Equality with a scalar
-v == b      // Equality with a scalar
-
-a != b      // Non-equality
-a != v      // Non-equality with a scalar
-v != b      // Non-equality with a scalar
-
-a < b       // Less than
-a < v       // Less than with a scalar
-v < b       // Less than with a scalar
-
-a <= b      // Less than equal
-a <= v      // Less than equal with a scalar
-v <= b      // Less than equal with a scalar
-
-a > b       // Greater than
-a > v       // Greater than with a scalar
-v > b       // Greater than with a scalar
-
-a >= b      // Greater than equal
-a >= v      // Greater than equal with a scalar
-v >= b      // Greater than equal with a scalar
-```
+| Expression   |  Semantics                                    | Return Type     |
+| ------------ | ----------------------------------------------|---------------- |
+| `a == b`     | Equality.                                     | `bool`          |
+| `a == v`     | Equality with a primitive scalar.             | `bool`          |
+| `v == b`     | Equality with a primitive scalar.             | `bool`          |
+| `a != b`     | Non-Equality.                                 | `bool`          |
+| `a != v`     | Non-Equality with a primitive scalar.         | `bool`          |
+| `v != b`     | Non-Equality with a primitive scalar.         | `bool`          |
+| `a < b`      | Less than.                                    | `bool`          |
+| `a < v`      | Less than with a primitive scalar.            | `bool`          |
+| `v < b`      | Less than with a primitive scalar.            | `bool`          |
+| `a <= b`     | Less than equal.                              | `bool`          |
+| `a <= v`     | Less than equal with a primitive scalar.      | `bool`          |
+| `v <= b`     | Less than equal with a primitive scalar.      | `bool`          |
+| `a > b`      | Greater than.                                 | `bool`          |
+| `a > v`      | Greater than with a primitive scalar.         | `bool`          |
+| `v > b`      | Greater than with a primitive scalar.         | `bool`          |
+| `a >= b`     | Greater than equal.                           | `bool`          |
+| `a >= v`     | Greater than equal with a primitive scalar.   | `bool`          |
+| `v >= b`     | Greater than equal with a primitive scalar.   | `bool`          |
 
 #### Arithmetic
-```c++
-+a          // Positive
--a          // Negative
 
-a += b      // Add assign
-a -= b      // Subtract assign
-a *= b      // Multiply assign
-a /= b      // Divide assign
-
-a + b       // Addition
-a + v       // Addition with a scalar
-v + b       // Addition with a scalar
-
-a - b       // Subtraction
-a - v       // Subtraction with a scalar
-v - b       // Subtraction with a scalar
-
-a * b       // Multiplication
-a * v       // Multiplication with a scalar
-v * b       // Multiplication with a scalar
-
-a / b       // Division
-a / v       // Division with a scalar
-v / b       // Division with a scalar
-```
+| Expression   |  Semantics                                    | Return Type     |
+| ------------ | ----------------------------------------------|---------------- |
+| `+a`         | Positive.                                     | `Value`         |
+| `-a`         | Negative.                                     | `Value`         |
+| `a += b`     | Add assign.                                   | `Value&`        |
+| `a -= b`     | Subtract assign.                              | `Value&`        |
+| `a *= b`     | Multiply assign.                              | `Value&`        |
+| `a /= b`     | Divide assign.                                | `Value&`        |
+| `a + b`      | Addition.                                     | `Value`         |
+| `a + v`      | Addition with a scalar.                       | `Value`         |
+| `v + b`      | Addition with a scalar.                       | `Value`         |
+| `a - b`      | Subtraction.                                  | `Value`         |
+| `a - v`      | Subtraction with a scalar.                    | `Value`         |
+| `v - b`      | Subtraction with a scalar.                    | `Value`         |
+| `a * b`      | Multiplication.                               | `Value`         |
+| `a * v`      | Multiplication with a scalar.                 | `Value`         |
+| `v * b`      | Multiplication with a scalar.                 | `Value`         |
+| `a / b`      | Division.                                     | `Value`         |
+| `a / v`      | Division with a scalar.                       | `Value`         |
+| `v / b`      | Division with a scalar.                       | `Value`         |
 
 ## Value Models
 
