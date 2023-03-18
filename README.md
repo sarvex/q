@@ -40,6 +40,7 @@ The *q_io* layer provides cross-platform audio and MIDI host connectivity straig
 * [Setup and Installation](docs/setup.md)
 * [Quick Start](docs/quick_start.md)
 * [Fundamentals](docs/fundamentals.md)
+* [Units](docs/units.md)
 
 ## <a name="jdeguzman"></a>About the Author
 
