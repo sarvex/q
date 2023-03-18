@@ -1,7 +1,3 @@
----
-title: Fundamentals
----
-
 # Fundamentals
 
 ## Table of Contents
@@ -11,23 +7,23 @@ title: Fundamentals
 - [Function Objects](#function-objects)
 - [Data Types](#data-types)
 - [Literals](#literals)
-  - [Example Expressions](#example-expressions)
 
 
 ## File Structure
 
 The library is organized with this simplified directory structure:
 
-* docs: Where this documentation resides.
-* example: Self-contained and easy to understand c++ programs that
-   demonstrate various features of the library.
-* q_io:
-   * external: 3rd party libraries used by the `q_io` module.
-   * include: q_io header files.
-   * src: q_io source files.
-* q_lib:
+* **docs**: Where this documentation resides.
+* **example**: Self-contained and easy to understand c++ programs that demonstrate various features of the library.
+* **q_io**:
+   * **external**: 3rd party libraries used by the `q_io` module.
+   * **include**: q_io header files.
+   * **src**: q_io source files.
+* **q_lib**:
    * include: Header-only core q_lib DSP library.
-* test: Contains a comprehensive set of c++ files for testing the library.
+* **test**: Contains a comprehensive set of c++ files for testing the library.
+
+Sub-directories not listed here can be ignored.
 
 ## Namespace
 
@@ -106,9 +102,21 @@ To augment the wealth of value types, the Q DSP library makes abundant use of
 We take advantage of C++ (from c++11) type safe [user-defined literals][1], instead of the usual `int`, `float` or `double` which can be unsafe when values from different units (e.g. frequency vs. duration) are mismatched. The library makes abundant use of user-defined literals for units such as time, frequency and decibels (e.g. 24_dB, instead of a unit-less 24 or worse,
 a non-intuitive, unit-less 15.8 —the gain equivalent of 24_dB). Such constants also make the code very readable, another objective of this library.
 
-Q Literals are placed in the namespace `q::literals`. The namespace is sparse enough to be hoisted into your namespace using `using namespace`:
+Q Literals are placed in the namespace `q::literals`. The namespace is sparse enough to be hoisted into your namespace using `using namespace`.
 
-### Example Expressions
+To use these literals, include the `literals.hpp` header:
+
+```c++
+#include <q/support/literals.hpp>
+```
+
+then use the `literals` namespace somewhere in a scope where you need it:
+
+```c++
+using namespace q::literals;
+```
+
+Here are some example expressions:
 
 #### Frequencies
 
@@ -146,18 +154,6 @@ Q Literals are placed in the namespace `q::literals`. The namespace is sparse en
 ```c++
 2_pi
 0.5_pi
-```
-
-To use these literals, include the `literals.hpp` header:
-
-```c++
-#include <q/support/literals.hpp>
-```
-
-then use the `literals` namespace somewhere in a scope where you need it:
-
-```c++
-using namespace q::literals;
 ```
 
 [1]: http://tinyurl.com/yafvvb6b
