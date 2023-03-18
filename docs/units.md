@@ -20,7 +20,7 @@
 
 ## Value
 
-A representation of a linear scalar value as a concept.
+A representation of a linear value as a concept.
 
 ### Expressions
 
@@ -29,7 +29,7 @@ A representation of a linear scalar value as a concept.
 | Symbol       | Description              |
 | ------------ | ------------------------ |
 | `V`          | Value type               |
-| `v`          | Primitive scalar value.  |
+| `v`          | Scalar value.            |
 | `a`, `b`     | Instances of `Value`.    |
 
 #### Constructors and assignment
@@ -38,8 +38,8 @@ A representation of a linear scalar value as a concept.
 | ------------ | --------------------------------------------------------------- |
 | `V{}`        |  Empty brace initialization. Value initialize a `Value`         |
 | `V()`        |  Default construction. Default construct initialize a `Value`.  |
-| `V{v}`       |  Brace initialization from primitive scalar value `v`.          |
-| `V(v)`       |  Construct a `Value` from primitive scalar value `v`.           |
+| `V{v}`       |  Brace initialization from scalar value `v`.                    |
+| `V(v)`       |  Construct a `Value` from scalar value `v`.                     |
 | `V{a}`       |  Copy brace initialization from `Value` `a`.                    |
 | `V(a)`       |  Copy construct from `Value` `a`.                               |
 | `a = b`      |  Assignment. Assign `Value` `b`, to `Value` `a`.                |
@@ -49,23 +49,23 @@ A representation of a linear scalar value as a concept.
 | Expression   |  Semantics                                    | Return Type     |
 | ------------ | ----------------------------------------------|---------------- |
 | `a == b`     | Equality.                                     | `bool`          |
-| `a == v`     | Equality with a primitive scalar.             | `bool`          |
-| `v == b`     | Equality with a primitive scalar.             | `bool`          |
+| `a == v`     | Equality with a scalar.                       | `bool`          |
+| `v == b`     | Equality with a scalar.                       | `bool`          |
 | `a != b`     | Non-Equality.                                 | `bool`          |
-| `a != v`     | Non-Equality with a primitive scalar.         | `bool`          |
-| `v != b`     | Non-Equality with a primitive scalar.         | `bool`          |
+| `a != v`     | Non-Equality with a scalar.                   | `bool`          |
+| `v != b`     | Non-Equality with a scalar.                   | `bool`          |
 | `a < b`      | Less than.                                    | `bool`          |
-| `a < v`      | Less than with a primitive scalar.            | `bool`          |
-| `v < b`      | Less than with a primitive scalar.            | `bool`          |
+| `a < v`      | Less than with a scalar.                      | `bool`          |
+| `v < b`      | Less than with a scalar.                      | `bool`          |
 | `a <= b`     | Less than equal.                              | `bool`          |
-| `a <= v`     | Less than equal with a primitive scalar.      | `bool`          |
-| `v <= b`     | Less than equal with a primitive scalar.      | `bool`          |
+| `a <= v`     | Less than equal with a scalar.                | `bool`          |
+| `v <= b`     | Less than equal with a scalar.                | `bool`          |
 | `a > b`      | Greater than.                                 | `bool`          |
-| `a > v`      | Greater than with a primitive scalar.         | `bool`          |
-| `v > b`      | Greater than with a primitive scalar.         | `bool`          |
+| `a > v`      | Greater than with a scalar.                   | `bool`          |
+| `v > b`      | Greater than with a scalar.                   | `bool`          |
 | `a >= b`     | Greater than equal.                           | `bool`          |
-| `a >= v`     | Greater than equal with a primitive scalar.   | `bool`          |
-| `v >= b`     | Greater than equal with a primitive scalar.   | `bool`          |
+| `a >= v`     | Greater than equal with a scalar.             | `bool`          |
+| `v >= b`     | Greater than equal with a scalar.             | `bool`          |
 
 #### Arithmetic
 
@@ -97,15 +97,20 @@ A representation of a linear scalar value as a concept.
 Type safe representation of frequency in Hertz.
 
 ```c++
-struct frequency : value<double, frequency>
+struct frequency : _unspecified_base_type_
 {
-   constexpr                     frequency(double val);
-   constexpr                     frequency(duration d);
+   using base_type = _unspecified_base_type_;
+   using base_type::base_type;
 
-   constexpr explicit operator   double() const ;
-   constexpr explicit operator   float() const;
+   constexpr explicit            frequency(double val);
+   constexpr explicit            frequency(duration d);
+
    constexpr q::period           period() const;
 };
+
+// Free functions
+constexpr double as_double(frequency f);
+constexpr float as_float(frequency f);
 ```
 
 #### Expressions
@@ -115,35 +120,39 @@ expressions.
 
 #### Notation
 
-| `d`       | Instance of `duration` (see below.)  |
-| `f`       | Instance of `frequency`              |
+| Expression   |  Semantics                                                      |
+| ------------ | --------------------------------------------------------------- |
+| `d`          | Instance of `duration` (see below.)                             |
+| `f`          | Instance of `frequency`                                         |
 
 #### Construction
 
-```c++
-// Construct a phase given the period (duration)
-phase{ d }
-```
+| Expression   |  Semantics                                                      |
+| ------------ | --------------------------------------------------------------- |
+| `phase{d}`   |  Construct a phase given the period (duration)                  |
+
 
 #### Conversions
 
-```c++
-float(f)       // Convert frequency to a scalar (float)
-double(f)      // Convert frequency to a scalar (double)
-```
+| Expression      | Semantics                                  | Return Type     |
+| --------------- | -------------------------------------------|---------------- |
+| `as_float(f)`   | Convert frequency to a scalar.             | `float`         |
+| `as_double(f)`  | Convert frequency to a scalar.             | `double`        |
+
 
 #### Misc
 
-```c++
-f.period()     // get the period (1/f)
-```
+| Expression      | Semantics                                  | Return Type     |
+| --------------- | -------------------------------------------|---------------- |
+| `f.period()`    | Get the period (1/f)                       | `period`        |
+
 
 ### duration
 
 Type safe representation of duration.
 
 ```c++
-struct duration : value<double, duration>
+struct duration : _unspecified_base_type_
 {
    constexpr                     duration(double val);
 
@@ -227,7 +236,7 @@ represent 2π radians.
 ```c++
 struct phase : _unspecified_base_type_
 {
-   using base_type = value<std::uint32_t, phase>;
+   using base_type = _unspecified_base_type_;
    using base_type::base_type;
 
    constexpr static auto one_cyc = int_max<std::uint32_t>();
