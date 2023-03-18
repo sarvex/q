@@ -1,3 +1,5 @@
+# ![Q-Logo](assets/images/q-logo-small.png) Audio DSP Library
+
 # Fundamentals
 
 ## Table of Contents
@@ -56,7 +58,9 @@ Typical audio processors in the Q DSP library work on floating point input sampl
 decibel gain = comp(env);
 ```
 
-Synthesizer oscillators, as another example, operate on phase-angle inputs and return output samples:
+`comp` is a compressor. The compressor above, however, processes signal envelopes rather than raw samples, in contrast to the typical implementation of DSP compressors. The compressor above accepts an envelope represented by `decibel`, performs computation in the logarithmic domain, and returns a compressed envelope also represented by `decibel`.
+
+Oscillators, as another example, operate on phase-angle inputs and return output samples:
 
 ```c++
 float out = sin(phase++);
@@ -68,13 +72,16 @@ The Q DSP library has a rich set of such types:
 * `frequency`: Cycles per second (Hz).
 * `duration` : A time span (seconds, milliseconds, etc.)
 * `period` : The inverse of frequency
-* `phase`: Fixed point 1.31 format where 31 bits are fractional. `phase`
-  represents 0 to 2π phase values suitable for oscillators.
+* `phase`: Fixed point 1.31 format where 31 bits are fractional. `phase` represents 0 to 2π phase values suitable for oscillators.
 * `decibel`: Ratio of one value to another on a logarithmic scale (dB)
 
 The Q DSP library is typeful and typesafe. You can not mismatch values of different types such as `frequency` and `decibel`, for example. Such potentially disastrous mistakes can happen if all values are just raw floating point types.
 
-There are conversions to and from these data types where it is reasonable to do so. 'decibel' can, for example, be converted to 'float' or 'double' using the 'as float' or 'as double' conversion functions.
+There are conversions to and from these data types where it is reasonable to do so. `decibel` can, for example, be converted to 'float' or 'double' using the `as_float` or `as_double` conversion functions. Example:
+
+```c++
+float gain = as_float(12_dB);
+```
 
 Relational operations are allowed. For example:
 
@@ -85,7 +92,7 @@ if (gain > 3_dB) // 3_dB is a decibel literal (see below)
 
 Arithmetic operations are allowed. For example:
 ```c++
-auto  = 3_ms + 5_ms; // 3_ms and 5_ms are duration literals (see below)
+auto total_duration = 3_ms + 5_ms; // 3_ms and 5_ms are duration literals (see below)
 ```
 
 Where appropriate, arithmetic with raw types are allowed. For example:
@@ -97,10 +104,7 @@ auto harmonic = 440_Hz * 4; // 440_Hz is a frequency literal (see below)
 ## Literals
 
 To augment the wealth of value types, the Q DSP library makes abundant use of
-[C++ user-defined literals][1].
-
-We take advantage of C++ (from c++11) type safe [user-defined literals][1], instead of the usual `int`, `float` or `double` which can be unsafe when values from different units (e.g. frequency vs. duration) are mismatched. The library makes abundant use of user-defined literals for units such as time, frequency and decibels (e.g. 24_dB, instead of a unit-less 24 or worse,
-a non-intuitive, unit-less 15.8 —the gain equivalent of 24_dB). Such constants also make the code very readable, another objective of this library.
+[C++ user-defined literals][1]. We take advantage of C++ type safe [user-defined literals][1], instead of the usual `int`, `float` or `double` which can be unsafe when values from different units (e.g. frequency vs. duration) are mismatched. The library makes abundant use of user-defined literals for units such as time, frequency and decibels (e.g. 24_dB, instead of a unit-less 24 or worse, a non-intuitive, unit-less 15.8 —the gain equivalent of 24_dB). Such constants also make the code very readable, another objective of this library.
 
 Q Literals are placed in the namespace `q::literals`. The namespace is sparse enough to be hoisted into your namespace using `using namespace`.
 
