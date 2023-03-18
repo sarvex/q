@@ -2,17 +2,15 @@
 
 # Quick Start
 
-<!-- TOC ignore:true -->
 ## Table of Contents
-<!-- TOC -->
-
+- [Table of Contents](#table-of-contents)
 - [Hello, World](#hello-world)
-    - [The DSP Code](#the-dsp-code)
+  - [The DSP Code](#the-dsp-code)
 - [Hello, Universe](#hello-universe)
-    - [The Synth](#the-synth)
-    - [The Oscillator](#the-oscillator)
-    - [Processing MIDI](#processing-midi)
-    - [The Main Function](#the-main-function)
+  - [The Synth](#the-synth)
+  - [The Oscillator](#the-oscillator)
+  - [Processing MIDI](#processing-midi)
+  - [The Main Function](#the-main-function)
 
 <!-- /TOC -->
 
@@ -43,7 +41,7 @@ Normally, there will be a processing loop that receives the incoming samples, `s
 
 44100 is the desired sampling rate. _feedback is the amount of feedback desired (anything from 0.0 to less than 1.0, e.g. 0.85). But take note of `350_ms`. Here, we take advantage of C++ (from c++11) type safe [user-defined literals](http://tinyurl.com/yafvvb6b), instead of the usual `float` or `double` which can be unsafe when values from different units (e.g. frequency vs. duration) are mismatched. The Q DSP library makes abundant use of user-defined literals for units such as time, frequency and even sound level (e.g. 24_dB, instead of a unit-less 24 or worse, a non-intuitive, unit-less 15.8 —the gain equivalent of 24_dB). Such constants also make the code very readable, another objective of this library.
 
-Processors such as `q::delay` are C++ function objects (sometimes called functors) that can be composed to form more complex processors. For example if you want to filter the delayed signal with a low-pass with a 1 kHz cutoff frequency, you apply the `q::lowpass` filter over the result of the delay:
+Processors such as `q::delay` are C++ function objects (sometimes called function objects) that can be composed to form more complex processors. For example if you want to filter the delayed signal with a low-pass with a 1 kHz cutoff frequency, you apply the `q::lowpass` filter over the result of the delay:
 
 ```c++
 q::lowpass _lp{1_kHz, 44100};
