@@ -1,5 +1,4 @@
 = Design - Q Audio DSP Library
-:imagesdir: ./assets/images
 
 == Design and Architecture
 
@@ -16,7 +15,6 @@ The Q library comprises of two layers:
    with or without an operating system, such as an audio plugin or direct to
    hardware ADC and DAC.
 
-image::q-arch.png[Q architecture,50%]
 
 By design, communication to and from the application, including but not
 limited to parameter control, is done exclusively via MIDI. We will track the

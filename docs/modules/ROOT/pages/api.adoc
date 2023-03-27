@@ -114,7 +114,7 @@ auto harmonic = 440_Hz * 4; // 440_Hz is a frequency literal (see below)
 == Values API
 
 // TODO: Missing values.adoc page
-See the xref:values.adoc[Values API page] for the complete API.
+// See the xref:values.adoc[Values API page] for the complete API.
 
 == Literals
 

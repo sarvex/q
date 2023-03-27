@@ -1,7 +1,7 @@
 name: Q
 title: Q DSP Library
 version: 1.0
-start_page: inline-text-formatting.adoc
+start_page: index.adoc
 asciidoc:
   attributes:
     source-language: asciidoc@
