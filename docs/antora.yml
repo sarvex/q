@@ -1,5 +1,5 @@
-name: Q
-title: Q DSP Library
+name: q
+title: Q Audio DSP Library
 version: 1.0
 start_page: index.adoc
 asciidoc:
