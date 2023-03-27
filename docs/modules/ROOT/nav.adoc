@@ -1,13 +1,8 @@
-* xref:design.adoc[]
-* xref:hello_world.adoc[]
-* xref:hello_world.adoc[]
-* xref:hello_universe.adoc[]
-* xref:fundamentals.adoc[]
-* xref:using_fx.adoc[]
-
-
-
-
+* xref:design.adoc[Design and Architecture]
+* xref:hello_world.adoc[Hello, World]
+* xref:hello_universe.adoc[Hello, Universe]
+* xref:fundamentals.adoc[Fundamentals]
+* xref:using_fx.adoc[Using FX]
 
 
 
