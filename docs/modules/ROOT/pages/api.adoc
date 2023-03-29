@@ -203,7 +203,7 @@ then use the `notes` namespace somewhere in a scope where you need it:
 
 [,c++]
 ----
-using namespace q::notes;
+using namespace q::note_names;
 ----
 
 '''

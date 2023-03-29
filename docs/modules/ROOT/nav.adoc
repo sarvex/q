@@ -1,8 +1,5 @@
-* xref:design.adoc[Design and Architecture]
-* xref:hello_world.adoc[Hello, World]
-* xref:hello_universe.adoc[Hello, Universe]
+* xref:setup.adoc[Setup and Installation]
+* xref:quick_start.adoc[Quick Start]
 * xref:fundamentals.adoc[Fundamentals]
-* xref:using_fx.adoc[Using FX]
-
-
+* xref:units.adoc[Units]
 
